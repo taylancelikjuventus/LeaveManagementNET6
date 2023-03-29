@@ -7,6 +7,8 @@ namespace LeaveManagementWeb.Contracts
     {
         Task<bool> CreateLeaveRequest(LeaveRequestCreateVM model);
 
+        Task<EmployeeLeaveRequestViewVM> GetMyLeaveDetails();
 
+        Task<List<LeaveRequest>> GetAllReqOfEmployeeAsync(string empID);
     }
 }
