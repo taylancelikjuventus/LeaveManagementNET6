@@ -1,0 +1,32 @@
+﻿
+-notifications gösterimleri için BS in badge leri kullanılabilinir.
+
+-List,Detail vs View ları için daima VM olusturulur.Buralara gereginden fazla Data gönderilmez.
+ Örnegin dataabsede Employee modeli var biz bunu Employee leri listelerken kullanmıyoruz.Aksine ViewModel yapıp
+ EmployeeListVM gibi sadece Employee modelinden gerekli yerleri burada tutuyoruz.
+
+-Controller a View eklerken bu işi Scaffold ile yapıyorsak ve View Page e de VM tipli bir data geçiriyorsak
+ DBContext içinde SQLDB de yeni bir tablo olusturacak DBSet<Model> field ı OTOMATİKMAN
+ olusturuluyor.SQL database e ASLA VM tipli Modelden tablo EKLENMEMELİDİR.Çünkü VM li modeller zaten
+ varolan tabloların daraltılıp genişletilerek View Pagelerde kullanılan ara Modellerdir.
+ O yüzden View PAgeleri Controllerlardan DB Context ve VM girerek Scaffold yaparken DAİMA
+ DBContext clası Kontrol edilmelidir.DB Context içinde View Model içeren bir DBSet varsa o satır silinmelidir.
+
+ public DbSet<LeaveAllocationEditVM> LeaveAllocations { get; set; }
+
+ yukarıdaki gibi bir SATIR olamaz.Yoksa VM modelden tablo yapar Database de.
+
+ Controller daki CRUD işlemleri sonrası meyadana gelecek Exception lar 
+ ModelState.AddErrorMEssage("err1" , ex.MEssage) ; 
+ şeklinde Model ile ilişkilendirilebilinir.
+
+- async fonksiyonlarda awaitable fonksiyonların ların önünde kesinlikle await yaz
+
+-her ViewModel eklendiginde MAPPER class ta hangi tipler arası dönüştürme yapılacagi belirtilmelidir.
+
+-Herhangi bir Repository içinde başka bir Repository de kullanabiliriz.Amaç Karmaşık CRUD işlerini Controler a degil
+ BLL e taşımaktır.
+
+ - Bir Model i ya da ViewModel i IValidatableObject e extend edersek custom validation kodu yazabiliriz.
+   Yani Required,Range etc... gibi Attribute ile yazdığımız validation da DAHA FAZALASINI 
+   Modeli Bu class a extend edip implemente edilecek Validate Methoduna yazabiliriz.
