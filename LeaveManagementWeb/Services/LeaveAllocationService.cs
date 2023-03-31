@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LeaveManagementWeb.Constants;
 using LeaveManagementWeb.Contracts;
 using LeaveManagementWeb.Data;
 using LeaveManagementWeb.Models;
 using LeaveManagementWeb.Repositories;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Build.Evaluation;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;        //bütün async methodları için import edilmelidir.
 
 namespace LeaveManagementWeb.Services
@@ -14,17 +17,20 @@ namespace LeaveManagementWeb.Services
         private readonly UserManager<Employee> userManager;
         private readonly ILeaveTypeService leaveTypeService;
         private readonly IMapper mapper;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
         private readonly ILeaveAllocationService leaveAllocationService;
         private readonly ApplicationDbContext context;
 
         //inject required parameters , LeaveType tablosundan datalara erişmek için onun servisi inject edildi
         public LeaveAllocationService(ApplicationDbContext context , UserManager<Employee> userManager , 
-            ILeaveTypeService leaveTypeService,IMapper mapper ) : base(context)
+            ILeaveTypeService leaveTypeService,IMapper mapper ,
+            AutoMapper.IConfigurationProvider configurationProvider) : base(context)
         {
             this.context = context;
             this.userManager = userManager;
             this.leaveTypeService = leaveTypeService;
             this.mapper = mapper;
+            this.configurationProvider = configurationProvider;
             this.leaveAllocationService = leaveAllocationService;
         }
 
@@ -40,8 +46,15 @@ namespace LeaveManagementWeb.Services
             //list of allocations
             var allocations = await context.LeaveAllocations.
                               Include(a=>a.LeaveType).                //SQL deki left Join ile aynı
-                              Where(b => b.EmployeeId == id).ToListAsync();
-           
+                              Where(b => b.EmployeeId == id)
+                              //Project to ile sadece istenen kolonlar dönderilir
+                              .ProjectTo<LeaveAllocationVM>(configurationProvider).
+                              ToListAsync();
+
+            //Aşagidaki şekilde istenen kolonlar seçilebilir Veya üstteki gibi
+            //Mapper ın ProjectTo methodu kullanılabilir.Istenen Kolonları seçmek için
+           // var test = context.getAllEmployees().select( col => new {col.id,col.name });
+
             //employee details
             var employee = await userManager.FindByIdAsync(id); 
 
@@ -65,6 +78,7 @@ namespace LeaveManagementWeb.Services
             //list of allocations
             var allocations = await context.LeaveAllocations.
                               Include(a => a.LeaveType).                //SQL deki left Join ile aynı
+                              ProjectTo<LeaveAllocationEditVM>(configurationProvider).
                               FirstOrDefaultAsync(b => b.Id == id);
 
             if(allocations == null) return null;    

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using LeaveManagementWeb.Contracts;
 using LeaveManagementWeb.Data;
 using LeaveManagementWeb.Models;
@@ -15,12 +16,14 @@ namespace LeaveManagementWeb.Services
         private readonly IHttpContextAccessor httpContextAccessor;
         private readonly UserManager<Employee> userManager;
         private readonly ILeaveAllocationService leaveAllocationService;
+        private readonly AutoMapper.IConfigurationProvider configurationProvider;
 
         public LeaveRequestService(ApplicationDbContext context,
             IMapper _mapper,
             IHttpContextAccessor _httpContextAccessor,
             UserManager<Employee> userManager,
-            ILeaveAllocationService leaveAllocationService
+            ILeaveAllocationService leaveAllocationService ,
+            AutoMapper.IConfigurationProvider configurationProvider
             ) : base(context)
         {
             this.context = context;
@@ -28,6 +31,7 @@ namespace LeaveManagementWeb.Services
             httpContextAccessor = _httpContextAccessor;
             this.userManager = userManager;
             this.leaveAllocationService = leaveAllocationService;
+            this.configurationProvider = configurationProvider;
         }
 
         public async Task<bool> CancelRequest(int id)
