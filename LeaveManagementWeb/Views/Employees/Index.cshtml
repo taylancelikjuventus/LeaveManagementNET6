@@ -27,30 +27,31 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Firstname)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Lastname)
-            </td>
-             <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateJoined)
-            </td>
-            <td>
-                
-                <a asp-action="ViewAllocations" asp-route-id="@item.Id" class="btn btn-info">View Allocations</a> 
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Firstname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lastname)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateJoined)
+                </td>
+                <td>
 
-                <!-- we don't need those fields here
-                <a asp-action="Edit" asp-route-id="item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="item.Id">Delete</a>
-                -->
+                    <a asp-action="ViewAllocations" asp-route-id="@item.Id" class="btn btn-info">View Allocations</a>
+
+                    <!-- we don't need those fields here
+                    <a asp-action="Edit" asp-route-id="item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="item.Id">Delete</a>
+                    -->
             </td>
-        </tr>
-}
+            </tr>
+        }
     </tbody>
 </table>

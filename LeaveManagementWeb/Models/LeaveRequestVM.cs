@@ -11,10 +11,14 @@ namespace LeaveManagementWeb.Models
         public DateTime DateRequested { get; set; }
 
         [Display(Name = "Leave Type")]
-        public LeaveType LeaveType { get; set; }
+        public LeaveTypeVM LeaveType { get; set; }
 
         public bool? Approved { get; set; }
 
         public bool Cancelled { get; set; }
+
+        public string? RequestingEmployeeId { get; set; }  
+
+        public EmployeeListVM Employee { get; set; }    
     }
 }

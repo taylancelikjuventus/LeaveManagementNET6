@@ -54,13 +54,13 @@ namespace LeaveManagementWeb.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            
+
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-           
+
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -68,16 +68,16 @@ namespace LeaveManagementWeb.Areas.Identity.Pages.Account
             [Display(Name = "Password")]
             public string Password { get; set; }
 
-           
+
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
 
             [Required]
-            [Display(Name ="First Name")]
+            [Display(Name = "First Name")]
             public string Firstname { get; set; }
-            
+
             [Required]
             [Display(Name = "Last Name")]
             public string Lastname { get; set; }
@@ -86,7 +86,7 @@ namespace LeaveManagementWeb.Areas.Identity.Pages.Account
             [Display(Name = "Date Of Birth")]
             [DataType(DataType.Date)]
             public DateTime? DateOfBirth { get; set; }
-            
+
             [Display(Name = "Date Joined")]
             [DataType(DataType.Date)]
             public DateTime? DateJoined { get; set; }
@@ -114,7 +114,7 @@ namespace LeaveManagementWeb.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            
+
             if (ModelState.IsValid)     //eğer üstteki InputModel valid ise
             {
                 //user olustur (employee instance ı)
@@ -130,7 +130,7 @@ namespace LeaveManagementWeb.Areas.Identity.Pages.Account
                 user.Lastname = Input.Lastname;
                 user.DateOfBirth = Input.DateOfBirth ?? default;
                 user.DateJoined = Input.DateJoined ?? default;
-                
+
 
                 //user a PAssword ATA ve user ı olustur ve DB ye kaydedilir.
                 //CreateAsync passwordü hashlayerek kayderder.
@@ -141,7 +141,7 @@ namespace LeaveManagementWeb.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     //Register eden herkese "User" rolü verecegiz
-                   await  _userManager.AddToRoleAsync(user, DefinedRoles.User );
+                    await _userManager.AddToRoleAsync(user, DefinedRoles.User);
 
 
                     var userId = await _userManager.GetUserIdAsync(user);
@@ -153,8 +153,17 @@ namespace LeaveManagementWeb.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    try
+                    {
+                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                                               $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

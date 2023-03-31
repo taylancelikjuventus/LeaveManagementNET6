@@ -34,12 +34,19 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="LeaveRequests" asp-action="Create">Apply For Leave</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="LeaveRequests" asp-action="MyLeave">My Leave</a>
-                        </li>
+
+
+                        @if (User.IsInRole(DefinedRoles.User))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="LeaveRequests" asp-action="Create">Apply For Leave</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" asp-area="" asp-controller="LeaveRequests" asp-action="MyLeave">My Leave</a>
+                            </li>
+
+
+                        }
 
                         @if (User.IsInRole(DefinedRoles.Admin))
                         {
@@ -53,10 +60,7 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" asp-controller="LeaveTypes" asp-action="Index">Leave Types</a>
-                                    <a class="dropdown-item" href="#">Leave Allocations</a>
-                                    <a class="dropdown-item" href="#">Leave Request</a>
-                                    <a class="dropdown-item" href="#">Employee Management</a>
-
+                                    <a class="dropdown-item" asp-controller="LeaveRequests" asp-action="Index">Leave Requests</a>
                                 </div>
                             </li>
                         }
@@ -94,11 +98,11 @@
 
     <!--Convert HTML tables to jQuery DataTable-->
     <script>
-       $( function(){
-            //dataTable , Tüm sayfalardaki table lara eklenir.
-           $('.table').DataTable();
-           $(".datepicker").datepicker({dateFormat:"yy-mm-dd"});
-       } );
+        $( function(){
+             //dataTable , Tüm sayfalardaki table lara eklenir.
+            $('.table').DataTable();
+            $(".datepicker").datepicker({dateFormat:"yy-mm-dd"});
+        } );
     </script>
 
 

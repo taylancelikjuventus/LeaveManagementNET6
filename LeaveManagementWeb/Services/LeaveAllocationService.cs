@@ -131,5 +131,19 @@ namespace LeaveManagementWeb.Services
             return true;
         }
 
+        //yani bir şey bulamazsa null dönderecek
+        public async Task<LeaveAllocation?> GetEmployeeAllocation(string employeeId, int leaveTypeId)
+        {
+
+            var result = await context.LeaveAllocations.FirstOrDefaultAsync(q => q.EmployeeId == employeeId && q.LeaveTypeId == leaveTypeId);
+           
+            return result;
+
+           //return await context.LeaveAllocations.FirstOrDefaultAsync(q => q.EmployeeId == employeeId && q.Id == leaveTypeId);
+
+        }
+
+
+
     }
 }

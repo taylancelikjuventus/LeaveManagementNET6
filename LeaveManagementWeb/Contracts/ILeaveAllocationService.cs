@@ -16,6 +16,8 @@ namespace LeaveManagementWeb.Contracts
 
         Task<LeaveAllocationEditVM> GetEmployeeAllocation(int id);
 
+        Task<LeaveAllocation?> GetEmployeeAllocation(string employeeId, int leaveTypeId);
+
         Task<bool> UpdateEmployeeAllocation(LeaveAllocationEditVM model);
     }
 }

@@ -27,6 +27,7 @@
 -Herhangi bir Repository içinde başka bir Repository de kullanabiliriz.Amaç Karmaşık CRUD işlerini Controler a degil
  BLL e taşımaktır.
 
- - Bir Model i ya da ViewModel i IValidatableObject e extend edersek custom validation kodu yazabiliriz.
-   Yani Required,Range etc... gibi Attribute ile yazdığımız validation da DAHA FAZALASINI 
+ - How To Validate Model IN GENERAL WAY
+   Bir Model i ya da ViewModel i IValidatableObject e extend edersek custom validation kodu yazabiliriz.
+   Yani [Required],[Range] etc... gibi Attribute ile yazdığımız validation da DAHA FAZALASINI 
    Modeli Bu class a extend edip implemente edilecek Validate Methoduna yazabiliriz.
