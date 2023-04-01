@@ -31,3 +31,54 @@
    Bir Model i ya da ViewModel i IValidatableObject e extend edersek custom validation kodu yazabiliriz.
    Yani [Required],[Range] etc... gibi Attribute ile yazdığımız validation da DAHA FAZALASINI 
    Modeli Bu class a extend edip implemente edilecek Validate Methoduna yazabiliriz.
+
+- EmailSender ı istenen Controllerlardan birine inejct ederek örnegin leave requesti
+  bırakan birinin requesti "accept" ya da "reject" edildiginde ona mail gönderilebilinir.
+  Veya bu işi Controllerdan ziyade Repository lerde de yapabiliriz.
+  Email yollama blockları try-catch içine alındı papercut email service ile test edilebilirler. 
+
+-ApplicationDBContext te SaveChanges methodu override edilerek Save esnasında yapılacak extra işlemler oraya
+ yazılabilinir.Öenegin aşagida bütün Entity lerin Base classında Id,DateCREATEd ve DateModified vardır.
+ Biz Eğer Entity DB ye ilk defa ekleniyorsa DateCreated ını now yaptık
+ Eğer Entity modifiye ediliyorsa da modifiye tarihini girdik.
+
+ public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+
+            foreach (var entry in base.ChangeTracker.Entries<BaseEntity>().Where(q=>q.State==EntityState.Added || q.State == EntityState.Modified) )
+            {
+                entry.Entity.DateModified = DateTime.Now;
+
+                if(entry.State == EntityState.Added)
+                {
+                    entry.Entity.DateCreated = DateTime.Now;
+                }
+            }
+
+
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+
+-Logging konusu işlendi.Logging Error ları track etmek için kullanılır.
+ Logging için Serilog kütüphanesi kullanılacak.
+
+1. appsettings.json da Logging kısmı Serilog ile degistirilir
+2. Program.cs e aşagidaki satır eklenir
+    builder.Host.UseSerilog((ctx, lc) =>
+    {
+    lc.WriteTo.Console().ReadFrom.Configuration(ctx.Configuration);  
+   
+    });
+
+Bu şekilde hata mesajları Consola yazdırılır. ctx.Configuration ile
+appsettings.json daki Serilog la ilgili ayarlar kullanılır.
+
+3.Middleware kısmına aşagidaki satır eklenir.
+
+var app = builder.Build();
+app.UseSerilogRequestLogging(); 
+
+-Seperation Of Concern  (Solid deki S)
+ Projeyi tek fiziksel parçalara böleriz Data ve repository ile ilgili kısımları ayrı bir
+ class librarye yazarız.

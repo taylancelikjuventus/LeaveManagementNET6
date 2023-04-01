@@ -6,6 +6,7 @@ using LeaveManagementWeb.Data;
 using LeaveManagementWeb.Models;
 using LeaveManagementWeb.Repositories;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Build.Evaluation;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;        //bütün async methodları için import edilmelidir.
@@ -18,19 +19,25 @@ namespace LeaveManagementWeb.Services
         private readonly ILeaveTypeService leaveTypeService;
         private readonly IMapper mapper;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly IEmailSender emailSender;
         private readonly ILeaveAllocationService leaveAllocationService;
         private readonly ApplicationDbContext context;
 
         //inject required parameters , LeaveType tablosundan datalara erişmek için onun servisi inject edildi
-        public LeaveAllocationService(ApplicationDbContext context , UserManager<Employee> userManager , 
-            ILeaveTypeService leaveTypeService,IMapper mapper ,
-            AutoMapper.IConfigurationProvider configurationProvider) : base(context)
+        public LeaveAllocationService(ApplicationDbContext context ,
+            UserManager<Employee> userManager , 
+            ILeaveTypeService leaveTypeService,
+            IMapper mapper ,
+            AutoMapper.IConfigurationProvider configurationProvider,
+            IEmailSender emailSender
+            ) : base(context)
         {
             this.context = context;
             this.userManager = userManager;
             this.leaveTypeService = leaveTypeService;
             this.mapper = mapper;
             this.configurationProvider = configurationProvider;
+            this.emailSender = emailSender;
             this.leaveAllocationService = leaveAllocationService;
         }
 
@@ -108,6 +115,8 @@ namespace LeaveManagementWeb.Services
 
             List<LeaveAllocation> allocations = new List<LeaveAllocation>();
 
+            List<Employee> empsWithAllocations = new List<Employee>();
+
             //LeaveAllocation tablosuna eklenecek objeleri ayarla
             foreach (var employee in employees)
             {
@@ -121,13 +130,36 @@ namespace LeaveManagementWeb.Services
                     EmployeeId = employee.Id,   
                     Period = period,    
                     NumOfDays = requiredleaveType.DefaultDays 
-
+                    
                });
 
+                empsWithAllocations.Add(employee);  
             }
+
+
 
             //LeaveAllocation tablosuna ekle
             await AddRangeAsync(allocations);
+
+
+            //send email to new allocated employees employees
+            foreach (var emp in empsWithAllocations)
+            {
+                try
+                {
+                    await emailSender.SendEmailAsync(emp.Email,
+                        $"Leave allocation posted for {period}",
+                        $"Your leave {requiredleaveType.Name} leave has been posted for the period of "+
+                        $"{period} .You have been given {requiredleaveType.DefaultDays}."
+                        );
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+            }
+
         }
 
         public async Task<bool> UpdateEmployeeAllocation(LeaveAllocationEditVM model)

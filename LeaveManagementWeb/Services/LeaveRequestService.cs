@@ -5,6 +5,7 @@ using LeaveManagementWeb.Data;
 using LeaveManagementWeb.Models;
 using LeaveManagementWeb.Repositories;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeaveManagementWeb.Services
@@ -17,13 +18,15 @@ namespace LeaveManagementWeb.Services
         private readonly UserManager<Employee> userManager;
         private readonly ILeaveAllocationService leaveAllocationService;
         private readonly AutoMapper.IConfigurationProvider configurationProvider;
+        private readonly IEmailSender emailSender;
 
         public LeaveRequestService(ApplicationDbContext context,
             IMapper _mapper,
             IHttpContextAccessor _httpContextAccessor,
             UserManager<Employee> userManager,
             ILeaveAllocationService leaveAllocationService ,
-            AutoMapper.IConfigurationProvider configurationProvider
+            AutoMapper.IConfigurationProvider configurationProvider,
+            IEmailSender emailSender
             ) : base(context)
         {
             this.context = context;
@@ -32,6 +35,7 @@ namespace LeaveManagementWeb.Services
             this.userManager = userManager;
             this.leaveAllocationService = leaveAllocationService;
             this.configurationProvider = configurationProvider;
+            this.emailSender = emailSender;
         }
 
         public async Task<bool> CancelRequest(int id)
@@ -44,6 +48,23 @@ namespace LeaveManagementWeb.Services
             leaveRequest.Cancelled = true;  
 
             await UpdateAsync(leaveRequest);
+
+            var user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+            
+            try
+            {
+                await emailSender.SendEmailAsync(user.Email,
+                    "Leave Request is canceled...",
+                    $"Your leave request from {leaveRequest.StartDate} to {leaveRequest.EndDate} " +
+                    $"has been canceled..."
+                    );
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
             return true;
         }
 
@@ -62,7 +83,22 @@ namespace LeaveManagementWeb.Services
                 await leaveAllocationService.UpdateAsync(allocation);
             }
            
-             await UpdateAsync(leaveRequest); 
+             await UpdateAsync(leaveRequest);
+
+            var user = await userManager.GetUserAsync(httpContextAccessor.HttpContext.User);
+            var message = approved ? "Approved":"Rejected" ;
+            try
+            {
+                await emailSender.SendEmailAsync(user.Email,
+                    $"Leave Request is {message} successfuly...",
+                    $"Your leave request from {leaveRequest.StartDate} to {leaveRequest.EndDate} " +
+                    $"has been {approved}"
+                    );
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         public async Task<bool> CreateLeaveRequest(LeaveRequestCreateVM model)
@@ -86,6 +122,18 @@ namespace LeaveManagementWeb.Services
 
             await AddAsync(leaveRequest);
 
+            //send email notification
+            try
+            {
+                await emailSender.SendEmailAsync(user.Email,
+                    "Leave Request is submitted successfuly...",
+                    $"Your leave request from {leaveRequest.StartDate} to {leaveRequest.EndDate} " +
+                    $"has been submitted for approval."
+                    );
+            }catch (Exception ex)
+            {
+
+            }
             return true;
         }
 

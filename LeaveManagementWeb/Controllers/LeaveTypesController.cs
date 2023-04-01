@@ -14,28 +14,28 @@ using LeaveManagementWeb.Constants;
 
 namespace LeaveManagementWeb.Controllers
 {
-    [Authorize(Roles = DefinedRoles.Admin )] //bütün login yapanlara açık rolden bağımsız olarak
+    [Authorize(Roles = DefinedRoles.Admin)] //bütün login yapanlara açık rolden bağımsız olarak
     public class LeaveTypesController : Controller
     {
         private readonly ILeaveTypeService _leaveTypeService;
         private readonly IMapper _mapper;
-        public readonly ILeaveAllocationService _leaveAllocationService ;
+        public readonly ILeaveAllocationService _leaveAllocationService;
 
-        public LeaveTypesController(ILeaveTypeService service, IMapper mapper , ILeaveAllocationService leaveAllocationService)
+        public LeaveTypesController(ILeaveTypeService service, IMapper mapper, ILeaveAllocationService leaveAllocationService)
         {
             _leaveTypeService = service;
-            _mapper =  mapper;
+            _mapper = mapper;
             _leaveAllocationService = leaveAllocationService;
 
         }
 
-        
+
         // GET: LeaveTypes
         public async Task<IActionResult> Index()
         {
             var leaveTypes = await _leaveTypeService.GetAllAsync();
 
-            if(leaveTypes == null)
+            if (leaveTypes == null)
                 return Problem("Entity set 'ApplicationDbContext.LeaveTypes'  is null.");
             else
             {
@@ -47,7 +47,7 @@ namespace LeaveManagementWeb.Controllers
         // GET: LeaveTypes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-          
+
             //Note int? id is nullable
             var leaveType = await _leaveTypeService.GetAsync(id);
             if (leaveType == null)
@@ -55,7 +55,7 @@ namespace LeaveManagementWeb.Controllers
                 return NotFound();
             }
 
-            var leaveTypeVM  = _mapper.Map<LeaveTypeVM>(leaveType);  
+            var leaveTypeVM = _mapper.Map<LeaveTypeVM>(leaveType);
             return View(leaveTypeVM);
         }
 
@@ -72,19 +72,20 @@ namespace LeaveManagementWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( LeaveTypeVM leaveTypeVM)
+        public async Task<IActionResult> Create(LeaveTypeVM leaveTypeVM)
         {
             if (ModelState.IsValid)
             {
-                LeaveType lt = new LeaveType() {
+                LeaveType lt = new LeaveType()
+                {
                     Name = leaveTypeVM.Name,
-                    DefaultDays = leaveTypeVM.DefaultDays ,
+                    DefaultDays = leaveTypeVM.DefaultDays,
                     DateCreated = DateTime.UtcNow,
-                    DateModified = DateTime.UtcNow  
+                    DateModified = DateTime.UtcNow
                 };
 
-                
-                await _leaveTypeService.AddAsync(lt);   
+
+                await _leaveTypeService.AddAsync(lt);
 
                 return RedirectToAction(nameof(Index));
             }
@@ -107,30 +108,30 @@ namespace LeaveManagementWeb.Controllers
 
             return View(leaveTypeVM);
         }
-        
+
         // POST: LeaveTypes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,  LeaveTypeVM leaveTypeVM)
+        public async Task<IActionResult> Edit(int id, LeaveTypeVM leaveTypeVM)
         {
             if (id != leaveTypeVM.Id)
             {
                 return NotFound();
             }
 
+            var leaveType = await _leaveTypeService.GetAsync(id);
+            if (leaveType == null)
+                return NotFound();
+
             if (ModelState.IsValid)
             {
-
                 //try-catch aynı recordu / db yi başkalarıda düzenliyorsa 
                 try
                 {
-                    var leaveType = _mapper.Map<LeaveType>(leaveTypeVM);  
-                    leaveType.DateModified = DateTime.UtcNow;
-
+                    _mapper.Map(leaveTypeVM,leaveType);
                     await _leaveTypeService.UpdateAsync(leaveType);
-                  
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -168,9 +169,9 @@ namespace LeaveManagementWeb.Controllers
 
             await _leaveAllocationService.LeaveAllocation(id);
 
-            return RedirectToAction( nameof(Index) );
+            return RedirectToAction(nameof(Index));
         }
 
-       
+
     }
 }

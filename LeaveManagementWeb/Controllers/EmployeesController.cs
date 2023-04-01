@@ -28,6 +28,7 @@ namespace LeaveManagementWeb.Controllers
         // GET: EmployeesController
         public  async Task<IActionResult> Index()
         {
+
             //get all employees in User role thye are no admin
             var employees = await userManager.GetUsersInRoleAsync(DefinedRoles.User);
 

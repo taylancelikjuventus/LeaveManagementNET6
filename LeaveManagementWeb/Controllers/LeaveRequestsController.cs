@@ -21,11 +21,14 @@ namespace LeaveManagementWeb.Controllers
         private readonly ApplicationDbContext _context;
         
         private readonly ILeaveRequestRepository leaveRequestService;
+        private readonly ILogger logger;
 
-        public LeaveRequestsController(ApplicationDbContext context,ILeaveRequestRepository leaveRequestService)
+        public LeaveRequestsController(ApplicationDbContext context,ILeaveRequestRepository leaveRequestService
+            ,ILogger<LeaveRequestsController> logger)
         {
             _context = context;
             this.leaveRequestService = leaveRequestService;
+            this.logger = logger;
         }
 
         [Authorize(Roles = DefinedRoles.Admin)]
@@ -65,7 +68,10 @@ namespace LeaveManagementWeb.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
+                // ModelState.AddModelError(string.Empty, ex.Message);
+
+                logger.LogError(ex,"Error Approving Leave Request");
+                throw;
             }
             return RedirectToAction(nameof(Index));
         }
@@ -80,7 +86,13 @@ namespace LeaveManagementWeb.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, ex.Message);
+                //We can handle like this way
+                // ModelState.AddModelError(string.Empty, ex.Message);
+
+                //but we can also log the errors
+                logger.LogError(ex, "Error Canceling Leave Request");
+                throw;
+
             }
             return RedirectToAction(nameof(MyLeave));
 
@@ -122,6 +134,8 @@ namespace LeaveManagementWeb.Controllers
             }
             catch (Exception ex)
             {
+                logger.LogError(ex, "Error Creating Leave Request");
+                
                 ModelState.AddModelError(String.Empty, "Error occered while creating Leave Request!");               
             }
 
