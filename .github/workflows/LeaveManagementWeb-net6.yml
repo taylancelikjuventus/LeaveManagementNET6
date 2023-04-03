@@ -1,10 +1,10 @@
-name: Build and deploy .NET Core application to windows webapp LeaveManagementWebNET6 with API Management Service LeaveManagementWebapi
+name: Build and deploy .NET Core application to windows webapp LeaveManagementWeb-net6 with API Management Service LeaveManagementWebapi
 on:
   push:
     branches:
     - master
 env:
-  AZURE_WEBAPP_NAME: LeaveManagementWebNET6
+  AZURE_WEBAPP_NAME: LeaveManagementWeb-net6
   DOTNET_CORE_VERSION: 6.0.x
   WORKING_DIRECTORY: LeaveManagementWeb
   CONFIGURATION: Release
@@ -13,7 +13,7 @@ env:
   AZURE_APIM_RESOURCEGROUP: leaveManagement_rg
   AZURE_APIM_SERVICENAME: LeaveManagementWebapi
   AZURE_APIM_API_ID: LeaveManagementWeb
-  AZURE_APIM_APPSERVICEURL: https://leavemanagementwebnet6.azurewebsites.net
+  AZURE_APIM_APPSERVICEURL: https://leavemanagementweb-net6.azurewebsites.net
   SWASHBUCLE_ASPNET_CORE_CLI_PACKAGE_VERSION: 5.6.3
   SWASHBUCKLE_DOTNET_CORE_VERSION: 3.1.x
   API_IMPORT_SPECIFICATION_PATH: LeaveManagementWeb/publish/swagger.json
@@ -64,7 +64,7 @@ jobs:
       with:
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        publish-profile: ${{ secrets.LeaveManagementWebNET6_dd37 }}
+        publish-profile: ${{ secrets.LeaveManagementWeb_net6_7f5b }}
     - name: Azure Login
       uses: azure/login@v1
       with:
