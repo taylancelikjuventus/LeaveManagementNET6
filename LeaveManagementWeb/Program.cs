@@ -1,14 +1,14 @@
-﻿using LeaveManagementWeb.Data;
+﻿using LeaveManagementData;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using LeaveManagementWeb.Mapper;
-using LeaveManagementWeb.Contracts;
-using LeaveManagementWeb.Repositories;
-using LeaveManagementWeb.Services;
+using LeaveManagementRepositories.Contracts;
+using LeaveManagementRepositories;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Serilog;
-
+using LeaveManagementRepositories.Services;
+using LeaveManagementRepositories.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -81,6 +81,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 app.Run();

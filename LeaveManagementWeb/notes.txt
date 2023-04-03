@@ -82,3 +82,74 @@ app.UseSerilogRequestLogging();
 -Seperation Of Concern  (Solid deki S)
  Projeyi tek fiziksel parçalara böleriz Data ve repository ile ilgili kısımları ayrı bir
  class librarye yazarız.
+
+-Template olarak aşagidakilinkteki free template kullanıldı
+https://www.wrappixel.com/templates/category/bootstrap-admin-dashboard-template/?product_orderby=freebies
+
+wrappixel sitesinden veya Admin LTE den free templateler indirilip kullanılabilinir.
+Bunu ASP projesinde kullanmak için indirilen template in index sayfasının source kodunu
+_Layout.cshtml gibi yeni bir Layout sayfası yaparak hazırlayabiliriz.Biz burada
+_AdminLayout.cshtml diye bir layout yaptık ve template in index kodunu buraya yapıştırdık.
+En son İlgili alana  @RenderBody(); yazdık hepsi bu kadar.
+
+Bizim _Layout.cshtml deki css ve js importlarını yeni yaptığımız _AdminLayout.cshtml e ekleriz.
+
+***Google,DuckDuck Go da search için gerekli keywordler
+<meta name="keywords"
+          content="wrappixel, admin dashboard, html css dashboard, web dashboard, bootstrap 5 admin, bootstrap 5, css3 dashboard, bootstrap 5 dashboard, Xtreme lite admin bootstrap 5 dashboard, frontend, responsive bootstrap 5 admin template, Xtreme admin lite design, Xtreme admin lite dashboard bootstrap 5 dashboard template">
+
+şeklinde eklenir.
+
+En son _ViewStart.cshtml in içerigi aşagidaki gibi degistirilir
+@{
+   // Layout = "_Layout";
+    Layout = "_AdminLayout";       //yeni Layout seçilir.
+
+}
+
+
+////////////////////////////////////PUBLISHING TO IIS(Internet Information Service) and SQL SERVER//////////////////////////////////
+CI/CD(Continues Integration / Continues Deployement)
+Github ta Actions 
+Azure Devops
+
+CI/CD : 
+Application da degişiklik yapar yapmaz ve bunu Github'da güncellersek(Checked in) 
+Application ın son halinin OTOMATIK publish edilmesini saglamaktır.
+
+IIS te publich etme
+1.IIS server açılır ve Sites noduna sagclick/add new Website ile site ekleriz.
+  açılan pencerede path yerine c:/inetpub/wwwroot içinde yeni olusturdugumuz
+  leavemanagement klasörünü gösteririz.Ve sitenin domain nameine
+  test.leavemanagement.com yazdık.
+
+  C:\Windows\System32\drivers\etc altındaki hosts dosyası açılır
+  Bu dosyada DNS-IP eşleştirmesi yapılır.
+  burdaki halihazırda olan  
+    127.0.0.1  localhost
+  ile browsera localhost yazınca onu soldaki IP ile eşleştirir demektir.
+
+  Buraya
+    127.0.0.1  test.leavemanagement.com
+  yazarız.Ve save ederiz.
+
+2.SQL Server manager açılır ve bu projedeki connectionstring deki database ismiyle aynı isimli bir database olustururuz.
+  Proje folderındaki EFScripts clasöründeki SQL komutlarını kopyalar ve MSSQL Server manager da çalıştırırız.
+  Böylece yeni database i olustururuz.
+
+  Daha sonra ISS in Application Pool undan SQL Server a Login izni veririz.
+  SQL Server da Security/Logins kısmına new Login seçer ve Bizim Application poolID\ApplicationName seçeriz.
+
+  Daha sonra bu Security/logins altında create edilen Login i tıklar ve açılan pencerede user Mapping nodu seçilir
+  ve buradan şu anki logini kendi database i ile eşleştiririz.
+  full grant vermek için alttaki tablodan db_owner seçilir.
+
+3.web browserdan test.leavemanagement.com yazarak uygulamayı calistiririz.
+ 
+
+
+//////////////////////////////////PUBLISH TO AZURE APP Service and AZURE SQL///////////////////////////////////
+
+1.
+
+

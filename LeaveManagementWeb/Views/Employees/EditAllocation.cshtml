@@ -1,8 +1,9 @@
-﻿@model LeaveManagementWeb.Models.LeaveAllocationEditVM
+﻿@using LeaveManagementData.Models
+@model LeaveAllocationEditVM
 
 @{
     ViewData["Title"] = "EditAllocation";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <h1>EditAllocation for @Model.Employee.Firstname @Model.Employee.Lastname</h1>

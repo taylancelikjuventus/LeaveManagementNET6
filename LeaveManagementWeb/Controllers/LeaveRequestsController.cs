@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using LeaveManagementWeb.Data;
-using LeaveManagementWeb.Models;
+using LeaveManagementRepositories;
 using AutoMapper;
-using LeaveManagementWeb.Contracts;
+using LeaveManagementRepositories.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
-using LeaveManagementWeb.Constants;
+using LeaveManagementData.Constants;
+using LeaveManagementData;
+using LeaveManagementData.Models;
 
 namespace LeaveManagementWeb.Controllers
 {
@@ -76,13 +77,14 @@ namespace LeaveManagementWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Cancel(int id)
+        public async Task<IActionResult> Cancel(int Id)
         {
             try
             {
-                await leaveRequestService.CancelRequest(id);
+                await leaveRequestService.CancelRequest(Id);
             }
             catch (Exception ex)
             {

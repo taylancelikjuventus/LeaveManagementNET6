@@ -1,7 +1,9 @@
-﻿@model EmployeeLeaveRequestViewVM
+﻿@using LeaveManagementData.Models
+@model EmployeeLeaveRequestViewVM
 
 @{
     ViewData["Title"] = "My Leave ";
+     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 
@@ -86,7 +88,11 @@
                     @Html.DisplayFor(modelItem => item.EndDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.LeaveType.Name)
+                    @{
+                        var name = Model.LeaveAllocations.FirstOrDefault(x=>x.leaveType.Id == item.LeaveTypeId);
+                    }
+                    @name?.leaveType?.Name
+                    @*Html.DisplayFor(modelItem => item.LeaveType.Name)*@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DateRequested)
@@ -104,7 +110,7 @@
                     }
                     else if (item.Approved.Value)
                     {
-                        <span class="badge bg-secondary">Approved</span>
+                        <span class="badge bg-success">Approved</span>
                     }
                     else if (item.Approved.Value == false)
                     {
@@ -115,10 +121,10 @@
 
 
                 <td>
-                    @if (item.Approved == null)
+                    @if (item.Approved == null && item.Cancelled==false)
                     {
-                        <form>
-                            <input asp-for="@item.Id" type="hidden" />
+                        <form asp-action="Cancel" method="post">
+                            <input  name="Id" value="@item.Id" type="hidden" />
                             <button type="submit" class="btn btn-danger btn-sm">Cancel Request</button>
                         </form>
                     }

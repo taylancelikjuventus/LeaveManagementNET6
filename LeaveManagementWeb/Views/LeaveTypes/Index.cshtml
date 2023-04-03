@@ -1,11 +1,12 @@
-﻿@model IEnumerable<LeaveManagementWeb.Models.LeaveTypeVM>
+﻿@using LeaveManagementData.Models
+@model IEnumerable<LeaveTypeVM>
 
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Available Leave Types";
+  Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Available Leave Types</h1>
 
 <p>
     <a asp-action="Create" class="btn btn-success"><i class="fa-regular fa-square-plus"></i>Create New</a>

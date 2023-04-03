@@ -1,7 +1,9 @@
-﻿@model AdminLeaveRequestViewVM
+﻿@using LeaveManagementData.Models
+@model AdminLeaveRequestViewVM
 
 @{
     ViewData["Title"] = "Index";
+     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <h1>Admin Leave Requests View</h1>
@@ -114,7 +116,7 @@
                     }
                     else if (item.Approved.Value)
                     {
-                        <span class="badge bg-secondary">Approved</span>
+                        <span class="badge bg-success">Approved</span>
                     }
                     else
                     {

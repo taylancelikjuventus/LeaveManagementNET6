@@ -1,4 +1,4 @@
-﻿using LeaveManagementWeb.Models;
+﻿using LeaveManagementData.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
